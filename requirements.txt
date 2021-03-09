@@ -1,0 +1,4 @@
+pandas==1.2.3
+urllib3==1.25.8
+requests==2.22.0
+Faker==6.5.0

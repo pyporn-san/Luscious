@@ -1,0 +1,6 @@
+.vscode
+getIntrospection
+.pylintrc
+apitest.py
+.pypirc
+*.pyc
