@@ -214,6 +214,13 @@ class Album():
         return self.__url
 
     @cached_property
+    def downloadUrl(self) -> str:
+        """
+        Returns the the download url of the comic
+        """
+        return urljoin(Luscious.HOME, self.json["download_url"])
+
+    @cached_property
     def pictureCount(self) -> int:
         """
         Returns the number of pictures in the Album
