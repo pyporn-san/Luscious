@@ -218,6 +218,7 @@ class Album():
         """
         Returns the number of animated pictures in the Album
         """
+        return self.json["number_of_animated_pictures"]
 
     @cached_property
     def tags(self) -> List[Tag]:
