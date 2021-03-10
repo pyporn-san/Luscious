@@ -136,18 +136,23 @@ class Album():
         else:
             self.__handler = handler
 
-        if(isinstance(albumInput, dict)):
-            self.__json = albumInput
-            self.__id = int(self.__json["id"])
-        elif(isinstance(albumInput, int)):
-            self.__id = albumInput
-            self.__json = self.__handler.post(
-                Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
-        elif(isinstance(albumInput, str)):
-            self.__id = int(albumInput.split("_")[-1][:-1])
-            self.__json = self.__handler.post(
-                Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+        try:
+            if(isinstance(albumInput, dict)):
+                self.__json = albumInput
+                self.__id = int(self.__json["id"])
+            elif(isinstance(albumInput, int)):
+                self.__id = albumInput
+                self.__json = self.__handler.post(
+                    Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+            elif(isinstance(albumInput, str)):
+                self.__id = int(albumInput.split("_")[-1][:-1])
+                self.__json = self.__handler.post(
+                    Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+        except:
+            self.__exists = False
+            return
 
+        self.__exists = True
         self.__url = urljoin(Luscious.HOME, self.__json["url"])
 
     def __str__(self) -> str:
@@ -245,7 +250,10 @@ class Album():
         """
         Returns a boolean value 
         """
-        return self.pageCount > 0
+        try:
+            return all([self.__exists == True, any([self.pictureCount, self.animatedCount])])
+        except:
+            return False
 
     @cached_property
     def contentType(self) -> str:
