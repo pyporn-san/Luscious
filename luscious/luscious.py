@@ -12,6 +12,12 @@ from requests.adapters import HTTPAdapter
 from requests.models import Response
 from urllib3.util.retry import Retry
 
+try:
+    from queries import *
+except:
+    from .queries import *
+
+
 class RequestHandler(object):
     """
     RequestHandler
@@ -113,7 +119,151 @@ class Tag():
 
 
 class Album():
-    pass
+    def __init__(self, albumInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
+        """
+        Initializes an album object based on albuminput
+        albumInput can either be:
+        An integer, being the ablum Id
+        Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
+
+        A string, the link itself
+        Some pages might not show up if you don't login using a Luscious object
+
+        A json dict being the json reponse of the Album
+        """
+        if(not handler):
+            self.__handler = RequestHandler()
+        else:
+            self.__handler = handler
+
+        if(isinstance(albumInput, dict)):
+            self.__json = albumInput
+            self.__id = int(self.__json["id"])
+        elif(isinstance(albumInput, int)):
+            self.__id = albumInput
+            self.__json = self.__handler.post(
+                Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+        elif(isinstance(albumInput, str)):
+            self.__id = int(albumInput.split("_")[-1][:-1])
+            self.__json = self.__handler.post(
+                Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+
+        self.__url = urljoin(Luscious.HOME, self.__json["url"])
+
+    def __str__(self) -> str:
+        """
+        Returns the Album's name
+        """
+        return self.name
+
+    @cached_property
+    def contentUrls(self) -> List[str]:
+        """
+        Return the list of content associated with the Album
+        """
+        picsJson = self.__handler.post(Luscious.API, json=getPictures(
+            self.__id)).json()["data"]["picture"]["list"]
+        pics = [i["url_to_original"] for i in picsJson["items"]]
+        for i in range(1, int(picsJson["info"]["total_pages"])):
+            picsJson = self.__handler.post(
+                Luscious.API, json=getPictures(self.__id, page=i+1)).json()
+            pics += [i["url_to_original"]
+                     for i in picsJson["data"]["picture"]["list"]["items"]]
+        return pics
+
+    @cached_property
+    def name(self) -> str:
+        """
+        Returns the name of the comic
+        """
+        return self.__json["title"]
+
+    @cached_property
+    def sanitizedName(self) -> str:
+        """
+        Return the sanitized name of the comic
+        """
+        return sanitize_filepath(self.name)
+
+    @cached_property
+    def url(self) -> str:
+        """
+        Returns the url associated with the comic
+        """
+        return self.__url
+
+    @cached_property
+    def pictureCount(self) -> int:
+        """
+        Returns the number of pictures in the Album
+        """
+        return self.json["number_of_pictures"]
+
+    @cached_property
+    def animatedCount(self) -> int:
+        """
+        Returns the number of animated pictures in the Album
+        """
+
+    @cached_property
+    def tags(self) -> List[Tag]:
+        """
+        The Album's tags
+        Returns a list of Tag objects
+        """
+        return [Tag(tag["id"], tag["text"], tag["category"], tag["url"]) for tag in self.json["tags"]]
+
+    @cached_property
+    def artists(self) -> List[str]:
+        """
+        Return a list of artist names associated with the Album
+        """
+        return [tag.name for tag in self.tags if tag.category == "Artist"]
+
+    @cached_property
+    def characters(self) -> List[str]:
+        """
+        Returns the list of characters present in the Album
+        """
+        return [tag.name for tag in self.tags if tag.category == "Character"]
+
+    @cached_property
+    def ongoing(self) -> bool:
+        """
+        The status of the comic
+        True if it's ongoing
+        False if not
+        Warning:
+        Will return False for all non manga album
+        """
+        onTag = Tag(id='1895669', text='ongoing',
+                    category=None, url='/tags/ongoing/')
+        return onTag in self.tags
+
+    @cached_property
+    def exists(self) -> bool:
+        """
+        Returns a boolean value 
+        """
+        return self.pageCount > 0
+
+    @cached_property
+    def contentType(self) -> str:
+        """
+        Returns the content type of the Album which is either "Manga" or "Pictures"
+        """
+        return self.json["content"]["title"]
+
+    @cached_property
+    def json(self) -> dict:
+        return self.__json
+
+    @cached_property
+    def handler(self) -> RequestHandler:
+        """
+        Returns the handler object of the Album
+        """
+        return self.__handler
 
 
 class Luscious(RequestHandler):
