@@ -257,6 +257,13 @@ class Album():
         return [tag.name for tag in self.tags if tag.category == "Character"]
 
     @cached_property
+    def audiences(self) -> dict:
+        """
+        Returns a dict with fields "id", "title", "url"
+        """
+        return self.json["audiences"]
+
+    @cached_property
     def ongoing(self) -> bool:
         """
         The status of the comic
