@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from functools import cached_property
+from random import sample
 from typing import List, Tuple, Union
 from urllib.parse import urljoin
 from urllib.request import getproxies
@@ -360,22 +361,27 @@ class Luscious(RequestHandler):
         """
         return Album(albumInput, download, handler=self.__handler)
 
-    def search(self, query: str, page: int = 1, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
+    def search(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: typeOptions = typeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
         """
         Searches <https://luscious.net> for given query
 
-        page is the page to search for in
-        returns a result dict with 2 keys "items" and "info"
+        `page` is the page to search in
+        `display` is the sorting option. If you need to change it look it up in the search section of the website
+        `albumType` is the type of albums to search for
+        `returnAlbum` indicated the return type
 
-        items is  a list of album ids if returnAlbum is false
+        Returns a result dict with 2 keys `items` and `info`
+
+        `items` is  a list of album ids if returnAlbum is false
         or it's a list of `Album` if returnAlbum is true
 
-        info is a dict with fields page, has_next_page, has_previous_page, total_items, total_pages, items_per_page , url_complete
+        `info` is a dict with fields `page`, `has_next_page`, `has_previous_page`, `total_items`, `total_pages`, `items_per_page` ,`url_complete`
         """
         json = self.__handler.post(
-            self.API, json=searchQuery(query, page=page)).json()
+            self.API, json=searchQuery(query, page=page, display=display, albumType=albumType)).json()
 
-        albumIds = [int(i["id"]) for i in json["data"]["album"]["list"]["items"]]
+        albumIds = [int(i["id"])
+                    for i in json["data"]["album"]["list"]["items"]]
         if(returnAlbum):
             albumIds = [Album(int(i)) for i in albumIds]
         return {"info": json["data"]["album"]["list"]["info"], "items": albumIds}
