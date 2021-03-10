@@ -113,6 +113,13 @@ class Tag():
         return self.text.split(":")[-1].strip().title()
 
     @cached_property
+    def fullName(self):
+        """
+        returns the full name of the in the format "category: name"
+        """
+        return self.text
+
+    @cached_property
     def sanitizedName(self):
         """
         Returns the sanitized name of the tag
