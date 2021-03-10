@@ -384,10 +384,10 @@ class Luscious(RequestHandler):
         """
         Get frontpage Albums
 
-        Returns a dict with 3 keys: "Hentai Manga","Hentai Pictures" and "Porn Pictures"
+        Returns a dict with 3 keys: `Hentai Manga`,`Hentai Pictures` and `Porn Pictures`
         With the value of all three being either:
         1. A list of integer ids of their respective content, if returnAlbum is False (default)
-        2. A list of Album instances if returnAlbum is True
+        2. A list of `Album` instances if returnAlbum is True
         """
         json = self.__handler.post(
             self.API, json=landingPageQuery(limit)).json()
