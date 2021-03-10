@@ -1,4 +1,4 @@
-pandas==1.2.3
-urllib3==1.25.8
-requests==2.22.0
-Faker==6.5.0
+requests==2.25.1
+Faker==6.6.0
+pathvalidate==2.3.2
+urllib3==1.26.3
