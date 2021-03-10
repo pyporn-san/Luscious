@@ -405,3 +405,14 @@ class Luscious(RequestHandler):
             dic = {k["title"]: [int(i["id"]) for i in k["items"]]
                    for k in sections}
         return dic
+
+    def getRandomId(self):
+        """
+        Returns a random id from latest interacted albums
+
+        Note:
+        This isn't truly random but this is the same random mechanism in the website itself
+        """
+        json = self.__handler.post(self.API, json=searchQuery(
+            "", 1, "date_last_interaction")).json()
+        return int(sample(json["data"]["album"]["list"]["items"], 1)[0]["id"])
