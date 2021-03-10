@@ -24,9 +24,9 @@ class typeOptions(Enum):
     """
     Used as albumType for search queries
     """
-    All = "all"
-    Manga = "manga"
-    Pictures = "pictures"
+    All = "All"
+    Manga = "Manga"
+    Pictures = "Pictures"
 
 
 class RequestHandler(object):
@@ -378,7 +378,7 @@ class Luscious(RequestHandler):
         `info` is a dict with fields `page`, `has_next_page`, `has_previous_page`, `total_items`, `total_pages`, `items_per_page` ,`url_complete`
         """
         json = self.__handler.post(
-            self.API, json=searchQuery(query, page=page, display=display, albumType=albumType)).json()
+            self.API, json=searchQuery(query, page=page, display=display, albumType=albumType.value)).json()
 
         albumIds = [int(i["id"])
                     for i in json["data"]["album"]["list"]["items"]]
