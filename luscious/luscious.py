@@ -273,9 +273,16 @@ class Album():
             return False
 
     @cached_property
+    def isManga(self) -> bool:
+        """
+        Returns True if the album is a manga, False if it's a picure album
+        """
+        return self.json["is_manga"]
+
+    @cached_property
     def contentType(self) -> str:
         """
-        Returns the content type of the Album which is either "Manga" or "Pictures"
+        Returns the content type of the Album which is either "Manga", "Non-Erotic" or "Real People"
         """
         return self.json["content"]["title"]
 
