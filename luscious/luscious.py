@@ -231,7 +231,7 @@ class Album():
     def tags(self) -> List[Tag]:
         """
         The Album's tags
-        Returns a list of Tag objects
+        Returns a list of `Tag` objects
         """
         return [Tag(tag["id"], tag["text"], tag["category"], tag["url"]) for tag in self.json["tags"]]
 
@@ -256,7 +256,7 @@ class Album():
         True if it's ongoing
         False if not
         Warning:
-        Will return False for all non manga album
+        Will return False for all non manga albums
         """
         onTag = Tag(id='1895669', text='ongoing',
                     category=None, url='/tags/ongoing/')
@@ -265,7 +265,7 @@ class Album():
     @cached_property
     def exists(self) -> bool:
         """
-        Returns a boolean value indicating wheter the album exists
+        Returns a boolean value indicating wheter the Album exists
         """
         try:
             return all([self.__exists == True, any([self.pictureCount, self.animatedCount])])
@@ -275,7 +275,7 @@ class Album():
     @cached_property
     def isManga(self) -> bool:
         """
-        Returns True if the album is a manga, False if it's a picure album
+        Returns True if the Album is a manga, False if it's a picure set
         """
         return self.json["is_manga"]
 
@@ -289,7 +289,7 @@ class Album():
     @cached_property
     def json(self) -> dict:
         """
-        Returns the json reponse of the album
+        Returns the json reponse of the Album
         """
         return self.__json
 
@@ -328,7 +328,7 @@ class Luscious(RequestHandler):
 
     def getAlbum(self, albumInput: Union[int, str], download: bool = False) -> Album:
         """
-        Return an album object based on albuminput
+        Return an `Album` object based on albuminput
 
         albumInput can either be an integer, being the ablum Id
         Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
@@ -344,7 +344,7 @@ class Luscious(RequestHandler):
         returns a result dict with 2 keys "items" and "info"
 
         items is  a list of album ids if returnAlbum is false
-        or it's a list of Albums if returnAlbum is true
+        or it's a list of `Album` if returnAlbum is true
 
         info is a dict with fields page, has_next_page, has_previous_page, total_items, total_pages, items_per_page , url_complete
         """
