@@ -24,7 +24,7 @@ def getPictures(albumId: int, page: int = 1):
     """
     list pcitures query
     :param albumId: album id
-    :param page: initial search page
+    :param page: search page
     :return: Query
     """
     query = """query ListAlbumPictures($input: PictureListInput!) {
@@ -110,6 +110,11 @@ def searchQuery(searchQuery: str, page: int = 1, display: str = "rating_all_time
 
 
 def landingPageQuery(limit: int = 15):
+    """
+    list landing page albums
+    :param limit: limit on how many albums to find
+    :return: Query
+    """
     query = """query getLandingPage($LIMIT : Int){
         landing_page_album{
             frontpage(limit: $LIMIT){
