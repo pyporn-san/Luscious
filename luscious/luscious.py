@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from functools import cached_property
 from typing import List, Tuple, Union
 from urllib.parse import urljoin
@@ -16,6 +17,15 @@ try:
     from queries import *
 except:
     from .queries import *
+
+
+class typeOptions(Enum):
+    """
+    Used as albumType for search queries
+    """
+    All = "all"
+    Manga = "manga"
+    Pictures = "pictures"
 
 
 class RequestHandler(object):
