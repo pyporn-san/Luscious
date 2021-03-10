@@ -365,9 +365,9 @@ class Luscious(RequestHandler):
         json = self.__handler.post(
             self.API, json=searchQuery(query, page=page)).json()
 
-        albumIds = [i["id"] for i in json["data"]["album"]["list"]["items"]]
+        albumIds = [int(i["id"]) for i in json["data"]["album"]["list"]["items"]]
         if(returnAlbum):
-            albumIds = [album(i) for i in albumIds]
+            albumIds = [Album(int(i)) for i in albumIds]
         return {"info": json["data"]["album"]["list"]["info"], "items": albumIds}
 
     def getLandingPage(self, limit: int = 15, returnAlbum: bool = False):
