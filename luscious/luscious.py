@@ -91,7 +91,25 @@ class RequestHandler(object):
 
 @dataclass
 class Tag():
-    pass
+    """
+    A Tag class used to help with tags
+    """
+    id: str
+    text: str
+    category: str
+    url: str
+
+    @cached_property
+    def name(self):
+        return self.text.split(":")[-1].strip().capitalize()
+
+    @cached_property
+    def sanitizedName(self):
+        return sanitize_filepath(self.name)
+
+    @cached_property
+    def hashtag(self):
+        return f"#{self.sanitizedName.replace(' ','_').replace('-','_')}"
 
 
 class Album():
