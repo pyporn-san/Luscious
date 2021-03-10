@@ -107,14 +107,23 @@ class Tag():
 
     @cached_property
     def name(self):
+        """
+        Returns the name of the comic without the category
+        """
         return self.text.split(":")[-1].strip().capitalize()
 
     @cached_property
     def sanitizedName(self):
+        """
+        Returns the sanitized name of the tag
+        """
         return sanitize_filepath(self.name)
 
     @cached_property
     def hashtag(self):
+        """
+        Returns the tag name in hashtag format "#Tag_Name"
+        """
         return f"#{self.sanitizedName.replace(' ','_').replace('-','_')}"
 
 
@@ -164,7 +173,7 @@ class Album():
     @cached_property
     def contentUrls(self) -> List[str]:
         """
-        Return the list of content associated with the Album
+        Returns the list of content associated with the Album
         """
         picsJson = self.__handler.post(Luscious.API, json=getPictures(
             self.__id)).json()["data"]["picture"]["list"]
@@ -186,7 +195,7 @@ class Album():
     @cached_property
     def sanitizedName(self) -> str:
         """
-        Return the sanitized name of the comic
+        Returns the sanitized name of the comic
         """
         return sanitize_filepath(self.name)
 
@@ -248,7 +257,7 @@ class Album():
     @cached_property
     def exists(self) -> bool:
         """
-        Returns a boolean value 
+        Returns a boolean value indicating wheter the album exists
         """
         try:
             return all([self.__exists == True, any([self.pictureCount, self.animatedCount])])
@@ -264,6 +273,9 @@ class Album():
 
     @cached_property
     def json(self) -> dict:
+        """
+        Returns the json reponse of the album
+        """
         return self.__json
 
     @cached_property
