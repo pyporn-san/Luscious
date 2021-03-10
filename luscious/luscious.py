@@ -110,7 +110,7 @@ class Tag():
         """
         Returns the name of the comic without the category
         """
-        return self.text.split(":")[-1].strip().capitalize()
+        return self.text.split(":")[-1].strip().title()
 
     @cached_property
     def sanitizedName(self):
