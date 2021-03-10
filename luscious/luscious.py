@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import cached_property
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from urllib.parse import urljoin
 from urllib.request import getproxies
 
@@ -267,4 +267,76 @@ class Album():
 
 
 class Luscious(RequestHandler):
-    pass
+    """
+    A Luscious class used to for various utilities and login
+    """
+    API = "https://members.luscious.net/graphql/nobatch/"
+    HOME = "https://members.luscious.net"
+    LOGIN = "https://members.luscious.net/accounts/login/"
+
+    def __init__(self, username: str = None, password: str = None, timeout: Tuple[float, float] = RequestHandler._timeout, total: int = RequestHandler._total, status_forcelist: List[int] = RequestHandler._status_forcelist.copy(), backoff_factor: int = RequestHandler._backoff_factor):
+        """
+        Initializes a Luscious object
+
+        Pass in your <https://members.luscious.net> email and password to login and use your own genre filters
+        Some genres are blocked by default and will not show up without login
+        """
+        super().__init__(timeout, total, status_forcelist, backoff_factor)
+        self.__handler = RequestHandler(
+            self.timeout, self.total, self.status_forcelist, self.backoff_factor)
+
+        if(username and password):
+            response = self.__handler.post(
+                self.LOGIN, data={"login": username, "password": password, "remember": "on"})
+            if("The username and/or password you specified are not correct." in response.text):
+                print("Login failed. Please check your credentials")
+
+    def getAlbum(self, albumInput: Union[int, str], download: bool = False) -> Album:
+        """
+        Return an album object based on albuminput
+
+        albumInput can either be an integer, being the ablum Id
+        Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
+        Or it can be a string, the link itself
+        """
+        return Album(albumInput, download, handler=self.__handler)
+
+    def search(self, query: str, page: int = 1, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
+        """
+        Searches <https://luscious.net> for given query
+
+        page is the page to search for in
+        returns a result dict with 2 keys "items" and "info"
+
+        items is  a list of album ids if returnAlbum is false
+        or it's a list of Albums if returnAlbum is true
+
+        info is a dict with fields page, has_next_page, has_previous_page, total_items, total_pages, items_per_page , url_complete
+        """
+        json = self.__handler.post(
+            self.API, json=searchQuery(query, page=page)).json()
+
+        albumIds = [i["id"] for i in json["data"]["album"]["list"]["items"]]
+        if(returnAlbum):
+            albumIds = [album(i) for i in albumIds]
+        return {"info": json["data"]["album"]["list"]["info"], "items": albumIds}
+
+    def getLandingPage(self, limit: int = 15, returnAlbum: bool = False):
+        """
+        Get frontpage Albums
+
+        Returns a dict with 3 keys: "Hentai Manga","Hentai Pictures" and "Porn Pictures"
+        With the value of all three being either:
+        1. A list of integer ids of their respective content, if returnAlbum is False (default)
+        2. A list of Album instances if returnAlbum is True
+        """
+        json = self.__handler.post(
+            self.API, json=landingPageQuery(limit)).json()
+        sections = json["data"]["landing_page_album"]["frontpage"]["sections"]
+        if(returnAlbum):
+            dic = {k["title"]: [self.getAlbum(
+                int(i["id"])) for i in k["items"]] for k in sections}
+        else:
+            dic = {k["title"]: [int(i["id"]) for i in k["items"]]
+                   for k in sections}
+        return dic
