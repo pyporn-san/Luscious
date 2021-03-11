@@ -204,6 +204,13 @@ class Album():
         return pics
 
     @cached_property
+    def thumbnail(self) -> str:
+        """
+        Returns the url of the Album's thumbnail
+        """
+        return self.json["cover"]["url"]
+
+    @cached_property
     def name(self) -> str:
         """
         Returns the name of the comic
