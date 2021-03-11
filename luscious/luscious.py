@@ -213,28 +213,28 @@ class Album():
     @cached_property
     def name(self) -> str:
         """
-        Returns the name of the comic
+        Returns the name of the Album
         """
         return self.__json["title"]
 
     @cached_property
     def sanitizedName(self) -> str:
         """
-        Returns the sanitized name of the comic
+        Returns the sanitized name of the Album
         """
         return sanitize_filepath(self.name)
 
     @cached_property
     def url(self) -> str:
         """
-        Returns the url associated with the comic
+        Returns the url associated with the Album
         """
         return self.__url
 
     @cached_property
     def downloadUrl(self) -> str:
         """
-        Returns the the download url of the comic
+        Returns the the download url of the Album
         """
         return urljoin(Luscious.HOME, self.json["download_url"])
 
@@ -284,6 +284,7 @@ class Album():
     @cached_property
     def audiences(self) -> dict:
         """
+        The intended audience of the Album
         Returns a dict with fields "id", "title", "url"
         """
         return self.json["audiences"]
@@ -291,7 +292,7 @@ class Album():
     @cached_property
     def ongoing(self) -> bool:
         """
-        The status of the comic
+        The status of the Album
         True if it's ongoing
         False if not
         Warning:
