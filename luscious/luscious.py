@@ -148,7 +148,7 @@ class Tag():
 class Album():
     def __init__(self, albumInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
         """
-        Initializes an album object based on albuminput
+        Initializes an album object based on albumInput
         albumInput can either be:
         An integer, being the ablum Id
         Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
@@ -367,7 +367,7 @@ class Luscious(RequestHandler):
 
     def getAlbum(self, albumInput: Union[int, str], download: bool = False) -> Album:
         """
-        Return an `Album` object based on albuminput
+        Return an `Album` object based on albumInput
 
         albumInput can either be an integer, being the ablum Id
         Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
