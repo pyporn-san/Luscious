@@ -20,6 +20,28 @@ def getAlbumInfo(albumId):
     return js
 
 
+def getVideoInfo(videoId):
+    """
+    Get video info query
+    :param videoId: video id
+    :return: Query
+    """
+    query = """query getVidoeInfo($id: ID!) {
+        video {
+            get(id: $id) {
+            ... on Video {...VideoStandard}
+            ... on MutationError {errors {code message}}
+            }
+        }
+    }
+    fragment VideoStandard on Video{id title tags content genres description audiences url poster_url subtitle_url v240p v360p v720p v1080p}"""
+    js = {
+        "query": query,
+        "variables": {"id": str(videoId)}
+    }
+    return js
+
+
 def getPictures(albumId: int, page: int = 1):
     """
     list pcitures query
