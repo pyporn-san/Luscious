@@ -514,6 +514,16 @@ class Luscious(RequestHandler):
         """
         return Album(albumInput, download, handler=self.__handler)
 
+    def getVideo(self, videoInput: Union[int, str], download: bool = False) -> Video:
+        """
+        Return an `Video` object based on videoInput
+
+        videoInput can either be an integer, being the Video id
+        Example (NSFW)<https://luscious.net/videos/dropout_episode_1_hq_11401/>'s Id being  11401
+        Or it can be a string, the link itself
+        """
+        return Video(videoInput, download, handler=self.__handler)
+
     def search(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: typeOptions = typeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
         """
         Searches <https://luscious.net> for given query
