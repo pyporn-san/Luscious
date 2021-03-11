@@ -239,6 +239,13 @@ class Album():
         return urljoin(Luscious.HOME, self.json["download_url"])
 
     @cached_property
+    def description(self) -> str:
+        """
+        Returns the description of the Album
+        """
+        return self.json["description"]
+
+    @cached_property
     def pictureCount(self) -> int:
         """
         Returns the number of pictures in the Album

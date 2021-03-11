@@ -12,7 +12,7 @@ def getInfo(albumId):
             }
         }
     }
-    fragment AlbumStandard on Album{id title tags is_manga content genres cover audiences number_of_pictures number_of_animated_pictures url download_url}"""
+    fragment AlbumStandard on Album{id title tags is_manga content genres cover description audiences number_of_pictures number_of_animated_pictures url download_url}"""
     js = {
         "query": query,
         "variables": {"id": str(albumId)}
