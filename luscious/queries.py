@@ -1,10 +1,10 @@
-def getInfo(albumId):
+def getAlbumInfo(albumId):
     """
     Get album info query
     :param albumId: album id
     :return: Query
     """
-    query = """query AlbumGetInfo($id: ID!) {
+    query = """query getAlbumInfo($id: ID!) {
         album {
             get(id: $id) {
             ... on Album {...AlbumStandard}

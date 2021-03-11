@@ -170,11 +170,11 @@ class Album():
             elif(isinstance(albumInput, int)):
                 self.__id = albumInput
                 self.__json = self.__handler.post(
-                    Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+                    Luscious.API, json=getAlbumInfo(self.__id)).json()["data"]["album"]["get"]
             elif(isinstance(albumInput, str)):
                 self.__id = int(albumInput.split("_")[-1][:-1])
                 self.__json = self.__handler.post(
-                    Luscious.API, json=getInfo(self.__id)).json()["data"]["album"]["get"]
+                    Luscious.API, json=getAlbumInfo(self.__id)).json()["data"]["album"]["get"]
         except:
             self.__exists = False
             return
