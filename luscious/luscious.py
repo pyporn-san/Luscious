@@ -341,6 +341,144 @@ class Album():
         return self.__handler
 
 
+class Video():
+    def __init__(self, videoInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
+        """
+        Initializes an Video object based on videoInput
+        videoInput can either be:
+        An integer, being the Video id
+        Example (NSFW)<https://luscious.net/videos/dropout_episode_1_hq_11401/>'s Id being  11401
+
+        A string, the link itself
+        Some pages might not show up if you don't login using a Luscious object
+
+        A json dict being the json reponse of the Video
+        """
+
+        if(not handler):
+            self.__handler = RequestHandler()
+        else:
+            self.__handler = handler
+
+        try:
+            if(isinstance(videoInput, dict)):
+                self.__json = videoInput
+                self.__id = int(self.__json["id"])
+            elif(isinstance(videoInput, int)):
+                self.__id = videoInput
+                self.__json = self.__handler.post(
+                    Luscious.API, json=getVideoInfo(self.__id)).json()["data"]["video"]["get"]
+            elif(isinstance(videoInput, str)):
+                self.__id = int(videoInput.split("_")[-1][:-1])
+                self.__json = self.__handler.post(
+                    Luscious.API, json=getVideoInfo(self.__id)).json()["data"]["video"]["get"]
+            else:
+                raise TypeError
+        except Exception as e:
+            self.__exists = False
+            print(e)
+            return
+
+        self.__exists = True
+        self.__url = urljoin(Luscious.HOME, self.__json["url"])
+
+    def __str__(self):
+        return self.name
+
+    @cached_property
+    def contentUrls(self) -> List[str]:
+        """
+        Returns the list video urls in each for a different resolution of the video in increasing order
+
+        Warning:
+        Some resolutions may not exist
+        """
+        return [self.json["v240p"], self.json["v360p"], self.json["v720p"], self.json["v1080p"]]
+
+    @cached_property
+    def thumbnail(self) -> str:
+        """
+        Returns the url of the Video's thumbnail
+        """
+        # FIXME
+        return self.json["poster_url"]
+
+    @cached_property
+    def name(self) -> str:
+        """
+        Returns the name of the Video
+        """
+        return self.__json["title"]
+
+    @cached_property
+    def sanitizedName(self) -> str:
+        """
+        Returns the sanitized name of the Video
+        """
+        return sanitize_filepath(self.name)
+
+    @cached_property
+    def url(self) -> str:
+        """
+        Returns the url associated with the Video
+        """
+        return self.__url
+
+    @cached_property
+    def description(self) -> str:
+        """
+        Returns the description of the Video
+        """
+        return self.json["description"]
+
+    @cached_property
+    def tags(self) -> List[Tag]:
+        """
+        The Video's tags
+        Returns a list of `Tag` objects
+        """
+        return [Tag(tag["id"], tag["text"], tag["category"], tag["url"]) for tag in self.json["tags"]]
+
+    @cached_property
+    def audiences(self) -> dict:
+        """
+        The intended audience of the Video
+        Returns a dict with fields "id", "title", "url"
+        """
+        return self.json["audiences"]
+
+    @cached_property
+    def exists(self) -> bool:
+        """
+        Returns a boolean value indicating wheter the Video exists
+        """
+        try:
+            return self.__exists == True
+        except:
+            return False
+
+    @cached_property
+    def contentType(self) -> str:
+        """
+        Returns the content type of the Video which is either "Hentai", "Non-Erotic" or "Real People"
+        """
+        return self.json["content"]["title"]
+
+    @cached_property
+    def json(self) -> dict:
+        """
+        Returns the json reponse of the Video
+        """
+        return self.__json
+
+    @cached_property
+    def handler(self) -> RequestHandler:
+        """
+        Returns the handler object of the Video
+        """
+        return self.__handler
+
+
 class Luscious(RequestHandler):
     """
     A Luscious class used to for various utilities and login
