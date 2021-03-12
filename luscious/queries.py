@@ -137,6 +137,56 @@ def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all
     return js
 
 
+def videoSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all_time", contentType: int = 0):
+    """
+    Get search results for a query
+    :param searchQuery: search keyword
+    :param display: sorting option
+    :param page: initial search page
+    :patam contentType: type of content to search for
+    :return: Query
+    """
+    query = """query VideoList($input: AlbumListInput!) {
+        video {
+            list(input: $input) {
+                info {...FacetCollectionInfo}
+                items {...VideoMinimal}
+            }
+        }
+    }
+    fragment FacetCollectionInfo on FacetCollectionInfo {
+        page has_next_page has_previous_page total_items total_pages items_per_page url_complete
+    }
+    fragment VideoMinimal on Video {
+        __typename id title
+    }
+    """
+    js = {
+        "query": query,
+        "variables": {
+            "input": {
+                "display": display,
+                "filters": [
+                    {
+                        "name": "audience_ids",
+                        "value": "+1+2+3+5+6+8+9+10"
+                    },
+                    {
+                        "name": "search_query",
+                        "value": searchQuery
+                    },
+                    {
+                        "name": "content_id",
+                        "value": contentType
+                    }
+                ],
+                "page": page
+            }
+        }
+    }
+    return js
+
+
 def landingPageQuery(limit: int = 15):
     """
     list landing page albums
