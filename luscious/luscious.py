@@ -17,7 +17,7 @@ from urllib3.util.retry import Retry
 try:
     from queries import *
 except:
-    from .queries import *
+    from .queries import *  # pylint: disable=unused-wildcard-import
 
 
 class typeOptions(Enum):
@@ -578,4 +578,4 @@ class Luscious(RequestHandler):
         """
         json = self.__handler.post(self.API, json=albumSearchQuery(
             "", 1, "date_last_interaction")).json()
-        return int(sample(json["data"]["album"]["list"]["items"], 1)[0]["id"])
+        return int(sample(json["data"]["album"]["list"]["items"], 1)[0]["id"])  # pylint: disable=unsubscriptable-object
