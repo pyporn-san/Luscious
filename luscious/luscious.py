@@ -560,6 +560,26 @@ class Luscious(RequestHandler):
             albumIds = [self.getAlbum(int(i)) for i in albumIds]
         return {"info": json["data"]["album"]["list"]["info"], "items": albumIds}
 
+    def searchVideo(self, query: str, page: int = 1, display: str = "rating_all_time", contentType: contentTypeOptions = contentTypeOptions.All) -> List[int]:
+        """
+        Searches <https://luscious.net> for videos with given query
+
+        `page` is the page to search in
+        `display` is the sorting option. If you need to change it look it up in the search section of the website
+        `contentType` is the content type to search for (from the Enum contentTypeOptions)
+
+        Returns a result dict with 2 keys `items` and `info`
+
+        `items` is  a list of video ids
+
+        `info` is a dict with fields `page`, `has_next_page`, `has_previous_page`, `total_items`, `total_pages`, `items_per_page` ,`url_complete`
+        """
+        json = self.__handler.post(
+            self.API, json=videoSearchQuery(query, page=page, display=display, contentType=contentType.value)).json()
+        videoIds = [int(i["id"])
+                    for i in json["data"]["video"]["list"]["items"]]
+        return {"info": json["data"]["video"]["list"]["info"], "items": videoIds}
+
     def getLandingPage(self, limit: int = 15, returnAlbum: bool = False):
         """
         Get frontpage Albums
