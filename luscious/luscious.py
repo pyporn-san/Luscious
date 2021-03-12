@@ -29,6 +29,16 @@ class albumTypeOptions(Enum):
     Pictures = "Pictures"
 
 
+class contentTypeOptions(Enum):
+    """
+    used as contentType in video and album search queries
+    """
+    All = ""
+    Hentai = "2"
+    NonErotic = "5"
+    RealPeople = "6"
+
+
 class RequestHandler(object):
     """
     RequestHandler
