@@ -534,7 +534,7 @@ class Luscious(RequestHandler):
         """
         return Video(videoInput, download, handler=self.__handler)
 
-    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: albumTypeOptions = albumTypeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
+    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: albumTypeOptions = albumTypeOptions.All, contentType: contentTypeOptions = contentTypeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
         """
         Searches <https://luscious.net> for given query
 
@@ -551,7 +551,7 @@ class Luscious(RequestHandler):
         `info` is a dict with fields `page`, `has_next_page`, `has_previous_page`, `total_items`, `total_pages`, `items_per_page` ,`url_complete`
         """
         json = self.__handler.post(
-            self.API, json=albumSearchQuery(query, page=page, display=display, albumType=albumType.value)).json()
+            self.API, json=albumSearchQuery(query, page=page, display=display, albumType=albumType.value, contentType=contentType.value)).json()
 
         albumIds = [int(i["id"])
                     for i in json["data"]["album"]["list"]["items"]]

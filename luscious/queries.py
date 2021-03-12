@@ -77,7 +77,7 @@ def getPictures(albumId: int, page: int = 1):
     return js
 
 
-def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all_time", albumType: str = "All"):
+def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all_time", albumType: str = "All", contentType: str = ""):
     """
     Get search results for a query
     Currently the api is broken and returns extra fields
@@ -122,6 +122,10 @@ def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all
                     {
                         "name": "search_query",
                         "value": searchQuery
+                    },
+                    {
+                        "name": "content_id",
+                        "value": contentType
                     }
                 ],
                 "page": page
