@@ -82,8 +82,10 @@ def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all
     Get search results for a query
     Currently the api is broken and returns extra fields
     :param searchQuery: search keyword
-    :param display: sorting option
     :param page: initial search page
+    :param display: sorting option
+    :param albumType: type of album
+    :patam contentType: type of content to search for
     :return: Query
     """
     query = """query AlbumList($input: AlbumListInput!) {

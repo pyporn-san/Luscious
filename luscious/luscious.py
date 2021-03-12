@@ -22,7 +22,7 @@ except:
 
 class albumTypeOptions(Enum):
     """
-    Used as albumType for search queries
+    Used as albumType for album search queries
     """
     All = "All"
     Manga = "Manga"
@@ -536,11 +536,12 @@ class Luscious(RequestHandler):
 
     def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: albumTypeOptions = albumTypeOptions.All, contentType: contentTypeOptions = contentTypeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
         """
-        Searches <https://luscious.net> for given query
+        Searches <https://luscious.net> for albums with given query
 
         `page` is the page to search in
         `display` is the sorting option. If you need to change it look it up in the search section of the website
-        `albumType` is the type of albums to search for
+        `albumType` is the type of albums to search for (from the Enum albumTypeOptions)
+        `contentType` is the content type to search for (from the Enum contentTypeOptions)
         `returnAlbum` indicated the return type
 
         Returns a result dict with 2 keys `items` and `info`
