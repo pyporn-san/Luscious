@@ -524,7 +524,7 @@ class Luscious(RequestHandler):
         """
         return Video(videoInput, download, handler=self.__handler)
 
-    def search(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: typeOptions = typeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
+    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: typeOptions = typeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
         """
         Searches <https://luscious.net> for given query
 
