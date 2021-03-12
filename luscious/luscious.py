@@ -33,10 +33,10 @@ class contentTypeOptions(Enum):
     """
     used as contentType in video and album search queries
     """
-    All = ""
-    Hentai = "2"
-    NonErotic = "5"
-    RealPeople = "6"
+    All = 0
+    Hentai = 2
+    NonErotic = 5
+    RealPeople = 6
 
 
 class RequestHandler(object):
