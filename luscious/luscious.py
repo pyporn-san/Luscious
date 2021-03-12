@@ -235,6 +235,10 @@ class Album():
         return sanitize_filepath(self.name)
 
     @cached_property
+    def _id(self) -> int:
+        return self.__id
+
+    @cached_property
     def url(self) -> str:
         """
         Returns the url associated with the Album
@@ -426,6 +430,10 @@ class Video():
         Returns the sanitized name of the Video
         """
         return sanitize_filepath(self.name)
+
+    @cached_property
+    def _id(self) -> int:
+        return self.__id
 
     @cached_property
     def url(self) -> str:
