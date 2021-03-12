@@ -534,7 +534,7 @@ class Luscious(RequestHandler):
         """
         return Video(videoInput, download, handler=self.__handler)
 
-    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: albumTypeOptions = albumTypeOptions.All, contentType: contentTypeOptions = contentTypeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
+    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: albumTypeOptions = albumTypeOptions.All, contentType: contentTypeOptions = contentTypeOptions.All) -> List[int]:
         """
         Searches <https://luscious.net> for albums with given query
 
@@ -542,22 +542,17 @@ class Luscious(RequestHandler):
         `display` is the sorting option. If you need to change it look it up in the search section of the website
         `albumType` is the type of albums to search for (from the Enum albumTypeOptions)
         `contentType` is the content type to search for (from the Enum contentTypeOptions)
-        `returnAlbum` indicated the return type
 
         Returns a result dict with 2 keys `items` and `info`
 
-        `items` is  a list of album ids if returnAlbum is false
-        or it's a list of `Album` if returnAlbum is true
+        `items` is  a list of album ids
 
         `info` is a dict with fields `page`, `has_next_page`, `has_previous_page`, `total_items`, `total_pages`, `items_per_page` ,`url_complete`
         """
         json = self.__handler.post(
             self.API, json=albumSearchQuery(query, page=page, display=display, albumType=albumType.value, contentType=contentType.value)).json()
-
         albumIds = [int(i["id"])
                     for i in json["data"]["album"]["list"]["items"]]
-        if(returnAlbum):
-            albumIds = [self.getAlbum(int(i)) for i in albumIds]
         return {"info": json["data"]["album"]["list"]["info"], "items": albumIds}
 
     def searchVideo(self, query: str, page: int = 1, display: str = "rating_all_time", contentType: contentTypeOptions = contentTypeOptions.All) -> List[int]:
