@@ -541,7 +541,7 @@ class Luscious(RequestHandler):
         `info` is a dict with fields `page`, `has_next_page`, `has_previous_page`, `total_items`, `total_pages`, `items_per_page` ,`url_complete`
         """
         json = self.__handler.post(
-            self.API, json=searchQuery(query, page=page, display=display, albumType=albumType.value)).json()
+            self.API, json=albumSearchQuery(query, page=page, display=display, albumType=albumType.value)).json()
 
         albumIds = [int(i["id"])
                     for i in json["data"]["album"]["list"]["items"]]
@@ -576,6 +576,6 @@ class Luscious(RequestHandler):
         Note:
         This isn't truly random but this is the same random mechanism in the website itself
         """
-        json = self.__handler.post(self.API, json=searchQuery(
+        json = self.__handler.post(self.API, json=albumSearchQuery(
             "", 1, "date_last_interaction")).json()
         return int(sample(json["data"]["album"]["list"]["items"], 1)[0]["id"])
