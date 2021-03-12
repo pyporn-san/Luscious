@@ -20,7 +20,7 @@ except:
     from .queries import *  # pylint: disable=unused-wildcard-import
 
 
-class typeOptions(Enum):
+class albumTypeOptions(Enum):
     """
     Used as albumType for search queries
     """
@@ -524,7 +524,7 @@ class Luscious(RequestHandler):
         """
         return Video(videoInput, download, handler=self.__handler)
 
-    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: typeOptions = typeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
+    def searchAlbum(self, query: str, page: int = 1, display: str = "rating_all_time", albumType: albumTypeOptions = albumTypeOptions.All, returnAlbum: bool = False) -> Union[List[int], List[Album]]:
         """
         Searches <https://luscious.net> for given query
 
