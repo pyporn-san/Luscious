@@ -20,6 +20,10 @@ except:
     from .queries import *  # pylint: disable=unused-wildcard-import
 
 
+class NotFound(Exception):
+    pass
+
+
 class albumTypeOptions(Enum):
     """
     Used as albumType for album search queries
@@ -185,12 +189,10 @@ class Album():
                 self.__id = int(albumInput.split("_")[-1][:-1])
                 self.__json = self.__handler.post(
                     Luscious.API, json=getAlbumInfo(self.__id)).json()["data"]["album"]["get"]
-        except:
-            self.__exists = False
-            return
 
-        self.__exists = True
-        self.__url = urljoin(Luscious.HOME, self.__json["url"])
+            self.__url = urljoin(Luscious.HOME, self.__json["url"])
+        except:
+            raise NotFound
 
     def __str__(self) -> str:
         """
@@ -315,16 +317,6 @@ class Album():
         onTag = Tag(id='1895669', text='ongoing',
                     category=None, url='/tags/ongoing/')
         return onTag in self.tags
-
-    @cached_property
-    def exists(self) -> bool:
-        """
-        Returns a boolean value indicating wheter the Album exists
-        """
-        try:
-            return all([self.__exists == True, any([self.pictureCount, self.animatedCount])])
-        except:
-            return False
 
     @cached_property
     def isManga(self) -> bool:
