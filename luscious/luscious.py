@@ -237,7 +237,7 @@ class Album():
         return sanitize_filepath(self.name)
 
     @cached_property
-    def _id(self) -> int:
+    def id(self) -> int:
         return self.__id
 
     @cached_property
