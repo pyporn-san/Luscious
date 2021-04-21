@@ -575,25 +575,18 @@ class Luscious(RequestHandler):
                     for i in json["data"]["video"]["list"]["items"]]
         return {"info": json["data"]["video"]["list"]["info"], "items": videoIds}
 
-    def getLandingPage(self, limit: int = 15, returnAlbum: bool = False):
+    def getLandingPage(self, limit: int = 15):
         """
         Get frontpage Albums
 
         Returns a dict with 3 keys: `Hentai Manga`,`Hentai Pictures` and `Porn Pictures`
-        With the value of all three being either:
-        1. A list of integer ids of their respective content, if returnAlbum is False (default)
-        2. A list of `Album` instances if returnAlbum is True
+        With the value of all three being a list of integer ids of their respective content
         """
         json = self.__handler.post(
             self.API, json=landingPageQuery(limit)).json()
-        sections = json["data"]["landing_page_album"]["frontpage"]["sections"]
-        if(returnAlbum):
-            dic = {k["title"]: [self.getAlbum(
-                int(i["id"])) for i in k["items"]] for k in sections}
-        else:
-            dic = {k["title"]: [int(i["id"]) for i in k["items"]]
-                   for k in sections}
-        return dic
+
+        return {k["title"]: [int(i["id"]) for i in k["items"]]
+                for k in json["data"]["landing_page_album"]["frontpage"]["sections"]}
 
     def getRandomId(self):
         """
