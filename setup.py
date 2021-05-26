@@ -31,5 +31,5 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries",
         "Topic :: Utilities"
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
 )
