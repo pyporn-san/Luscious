@@ -45,8 +45,6 @@ class contentTypeOptions(Enum):
 
 class RequestHandler(object):
     """
-    RequestHandler
-    ==============
     Defines a synchronous request handler class that provides methods and
     properties for working with REST APIs that is backed by the `requests`
     library.
