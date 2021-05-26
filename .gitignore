@@ -4,3 +4,6 @@ getIntrospection
 apitest.py
 .pypirc
 *.pyc
+docs/build
+docs/source/_build
+tests
