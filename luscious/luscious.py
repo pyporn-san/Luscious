@@ -164,13 +164,13 @@ class Album():
         """
         Initializes an album object based on albumInput
         albumInput can either be:
-        An integer, being the ablum Id
+        An integer, being the ablbum Id
         Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
 
         A string, the link itself
         Some pages might not show up if you don't login using a Luscious object
 
-        A json dict being the json reponse of the Album
+        A json dict being the json response of the Album
         """
         if(not handler):
             self.__handler = RequestHandler()
@@ -321,7 +321,7 @@ class Album():
     @cached_property
     def isManga(self) -> bool:
         """
-        Returns True if the Album is a manga, False if it's a picure set
+        Returns True if the Album is a manga, False if it's a picture set
         """
         return self.json["is_manga"]
 
@@ -335,7 +335,7 @@ class Album():
     @cached_property
     def json(self) -> dict:
         """
-        Returns the json reponse of the Album
+        Returns the json response of the Album
         """
         return self.__json
 
@@ -358,7 +358,7 @@ class Video():
         A string, the link itself
         Some pages might not show up if you don't login using a Luscious object
 
-        A json dict being the json reponse of the Video
+        A json dict being the json response of the Video
         """
 
         if(not handler):
@@ -388,7 +388,7 @@ class Video():
         self.__exists = True
         self.__url = urljoin(Luscious.HOME, self.__json["url"])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @cached_property
@@ -460,7 +460,7 @@ class Video():
     @cached_property
     def exists(self) -> bool:
         """
-        Returns a boolean value indicating wheter the Video exists
+        Returns a boolean value indicating whether the Video exists
         """
         try:
             return self.__exists == True
@@ -518,7 +518,7 @@ class Luscious(RequestHandler):
         """
         Return an `Album` object based on albumInput
 
-        albumInput can either be an integer, being the ablum Id
+        albumInput can either be an integer, being the ablbum Id
         Example (NSFW)<https://www.luscious.net/albums/animated-gifs_374481/>'s Id being  374481
         Or it can be a string, the link itself
         """

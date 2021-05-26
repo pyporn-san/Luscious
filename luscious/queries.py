@@ -1,6 +1,7 @@
 def getAlbumInfo(albumId):
     """
     Get album info query
+
     :param albumId: album id
     :return: Query
     """
@@ -23,10 +24,11 @@ def getAlbumInfo(albumId):
 def getVideoInfo(videoId):
     """
     Get video info query
+
     :param videoId: video id
     :return: Query
     """
-    query = """query getVidoeInfo($id: ID!) {
+    query = """query getVideoInfo($id: ID!) {
         video {
             get(id: $id) {
             ... on Video {...VideoStandard}
@@ -44,7 +46,8 @@ def getVideoInfo(videoId):
 
 def getPictures(albumId: int, page: int = 1):
     """
-    list pcitures query
+    list pictures query
+
     :param albumId: album id
     :param page: search page
     :return: Query
@@ -81,11 +84,12 @@ def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all
     """
     Get search results for a query
     Currently the api is broken and returns extra fields
+
     :param searchQuery: search keyword
     :param page: initial search page
     :param display: sorting option
     :param albumType: type of album
-    :patam contentType: type of content to search for
+    :param contentType: type of content to search for
     :return: Query
     """
     query = """query AlbumList($input: AlbumListInput!) {
@@ -140,10 +144,11 @@ def albumSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all
 def videoSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all_time", contentType: int = 0):
     """
     Get search results for a query
+
     :param searchQuery: search keyword
     :param display: sorting option
     :param page: initial search page
-    :patam contentType: type of content to search for
+    :param contentType: type of content to search for
     :return: Query
     """
     query = """query VideoList($input: AlbumListInput!) {
@@ -190,6 +195,7 @@ def videoSearchQuery(searchQuery: str, page: int = 1, display: str = "rating_all
 def landingPageQuery(limit: int = 15):
     """
     list landing page albums
+
     :param limit: limit on how many albums to find
     :return: Query
     """
