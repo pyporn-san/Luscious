@@ -158,6 +158,13 @@ class Tag():
         """
         return f"#{self.sanitizedName.replace(' ','_').replace('-','_')}"
 
+    @cached_property
+    def __str__(self):
+        """
+        Returns the tag name
+        """
+        return self.name
+
 
 class Album():
     def __init__(self, albumInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
