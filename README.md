@@ -2,6 +2,7 @@
 
 luscious is a Python library that wraps around the [luscious.net (NSFW)](https://www.luscious.net/) graphQL API. This is not an official API in any capacity.
 
+[Documentation](https://luscious.readthedocs.io/en/stable/)
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the latest release of luscious.

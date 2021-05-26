@@ -45,8 +45,6 @@ class contentTypeOptions(Enum):
 
 class RequestHandler(object):
     """
-    RequestHandler
-    ==============
     Defines a synchronous request handler class that provides methods and
     properties for working with REST APIs that is backed by the `requests`
     library.
@@ -167,6 +165,9 @@ class Tag():
 
 
 class Album():
+    """
+    A class representing an album and it's properties
+    """
     def __init__(self, albumInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
         """
         Initializes an album object based on albumInput
@@ -355,6 +356,9 @@ class Album():
 
 
 class Video():
+    """
+    A class representing a video and it's properties
+    """
     def __init__(self, videoInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
         """
         Initializes an Video object based on videoInput
@@ -484,7 +488,7 @@ class Video():
     @cached_property
     def json(self) -> dict:
         """
-        Returns the json reponse of the Video
+        Returns the json response of the Video
         """
         return self.__json
 
