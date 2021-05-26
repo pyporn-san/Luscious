@@ -14,7 +14,7 @@ These are the main classes you would normally use
 
 Helper classes
 ++++++++++++++
-the Enumerators are options of some :ref:`Luscious` methods
+Classes that are not useful for direct use
 
 .. toctree::
     :maxdepth: 2
@@ -22,3 +22,4 @@ the Enumerators are options of some :ref:`Luscious` methods
     Enumerators
     Tag dataclass
     GraphQL APU Queries
+    Request handler
