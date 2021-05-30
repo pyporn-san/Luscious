@@ -1,9 +1,12 @@
+import mimetypes
+import time
 from dataclasses import dataclass
 from enum import Enum
 from functools import cached_property
+from pathlib import Path
 from random import sample
 from typing import List, Tuple, Union
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 from urllib.request import getproxies
 
 import requests
@@ -12,6 +15,7 @@ from pathvalidate import sanitize_filepath
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.models import Response
+from tqdm import trange
 from urllib3.util.retry import Retry
 
 try:
@@ -353,6 +357,49 @@ class Album():
         Returns the handler object of the Album
         """
         return self.__handler
+
+    def downloadContent(self, root: Path = Path("Albums"), printProgress: bool = True):
+        """
+        Downloads all pictures that don't already exist in the directory to the follder `root`
+        The progress bar can be disabled by passing false to printProgress
+        Return the list of downloaded files' filepaths
+        """
+        paths = []
+        if(isinstance(root, str)):
+            root = Path(root)
+        root = root.joinpath(sanitize_filepath(self.sanitizedName))
+        root.mkdir(parents=True, exist_ok=True)
+        with trange(len(self.contentUrls), disable=not printProgress, desc=self.name) as tq:
+            for i in tq:
+                if(self.isManga):
+                    fpath = root.joinpath(
+                        f"{self.sanitizedName}_{str(i).zfill(len(str(self.pictureCount-1)))}")
+                else:
+                    fpath = root.joinpath(Path(urlparse(self.contentUrls[i]).path).name)
+                printName = f'"{self.name}" page {i+1}/{self.pictureCount}'
+                if(list(root.glob(fpath.name+"*"))):
+                    tq.set_description(f"{fpath.name} exists")
+                    paths.append(list(root.glob(fpath.name+"*"))[0])
+                    time.sleep(0.1)
+                    continue
+                else:
+                    try:
+                        r = self.handler.get(
+                            self.contentUrls[i], allow_redirects=True)
+                        fpath = fpath.with_suffix(
+                            mimetypes.guess_extension(r.headers['content-type']))
+                        with open(sanitize_filepath(fpath), "wb") as f:
+                            f.write(r.content)
+                        tq.set_description(f'{printName} done')
+                        paths.append(fpath)
+                    except Exception as e:
+                        fpath = fpath.with_name(fpath.name + "_SKIPPED")
+                        with open(sanitize_filepath(fpath), "wb") as f:
+                            pass
+                        tq.set_description(
+                            f'{printName} skipped because {e}')
+                        paths.append(fpath)
+        return paths
 
 
 class Video():
