@@ -272,7 +272,7 @@ class Album():
     @cached_property
     def pictureCount(self) -> int:
         """
-        Returns the number of pictures in the Album
+        Returns the number of pictures in the Album(This count includes the gifs)
         """
         return self.json["number_of_pictures"]
 
