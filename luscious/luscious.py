@@ -213,28 +213,6 @@ class Album():
         return self.name
 
     @cached_property
-    def contentUrls(self) -> List[str]:
-        """
-        Returns the list of content associated with the Album
-        """
-        picsJson = self.__handler.post(Luscious.API, json=getPictures(
-            self.__id)).json()["data"]["picture"]["list"]
-        pics = [i["url_to_original"] for i in picsJson["items"]]
-        for i in range(1, int(picsJson["info"]["total_pages"])):
-            picsJson = self.__handler.post(
-                Luscious.API, json=getPictures(self.__id, page=i+1)).json()
-            pics += [i["url_to_original"]
-                     for i in picsJson["data"]["picture"]["list"]["items"]]
-        return pics
-
-    @cached_property
-    def thumbnail(self) -> str:
-        """
-        Returns the url of the Album's thumbnail
-        """
-        return self.json["cover"]["url"]
-
-    @cached_property
     def name(self) -> str:
         """
         Returns the name of the Album
@@ -267,11 +245,19 @@ class Album():
         return urljoin(Luscious.HOME, self.json["download_url"])
 
     @cached_property
-    def description(self) -> str:
+    def contentUrls(self) -> List[str]:
         """
-        Returns the description of the Album
+        Returns the list of content associated with the Album
         """
-        return self.json["description"]
+        picsJson = self.__handler.post(Luscious.API, json=getPictures(
+            self.__id)).json()["data"]["picture"]["list"]
+        pics = [i["url_to_original"] for i in picsJson["items"]]
+        for i in range(1, int(picsJson["info"]["total_pages"])):
+            picsJson = self.__handler.post(
+                Luscious.API, json=getPictures(self.__id, page=i+1)).json()
+            pics += [i["url_to_original"]
+                     for i in picsJson["data"]["picture"]["list"]["items"]]
+        return pics
 
     @cached_property
     def pictureCount(self) -> int:
@@ -286,6 +272,20 @@ class Album():
         Returns the number of animated pictures in the Album
         """
         return self.json["number_of_animated_pictures"]
+
+    @cached_property
+    def thumbnail(self) -> str:
+        """
+        Returns the url of the Album's thumbnail
+        """
+        return self.json["cover"]["url"]
+
+    @cached_property
+    def description(self) -> str:
+        """
+        Returns the description of the Album
+        """
+        return self.json["description"]
 
     @cached_property
     def tags(self) -> List[Tag]:
@@ -362,7 +362,7 @@ class Album():
         """
         Downloads all pictures that don't already exist in the directory to the follder `root`
         The progress bar can be disabled by passing false to printProgress
-        Return the list of downloaded files' filepaths
+        Returns the list of downloaded files' filepaths
         """
         paths = []
         if(isinstance(root, str)):
@@ -375,7 +375,8 @@ class Album():
                     fpath = root.joinpath(
                         f"{self.sanitizedName}_{str(i).zfill(len(str(self.pictureCount-1)))}")
                 else:
-                    fpath = root.joinpath(Path(urlparse(self.contentUrls[i]).path).name)
+                    fpath = root.joinpath(
+                        Path(urlparse(self.contentUrls[i]).path).name)
                 printName = f'"{self.name}" page {i+1}/{self.pictureCount}'
                 if(list(root.glob(fpath.name+"*"))):
                     tq.set_description(f"{fpath.name} exists")
