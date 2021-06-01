@@ -506,24 +506,6 @@ class Video():
         return self.name
 
     @cached_property
-    def contentUrls(self) -> List[str]:
-        """
-        Returns the list video urls in each for a different resolution of the video in increasing order
-
-        Warning:
-        Some resolutions may not exist
-        """
-        return [self.json["v240p"], self.json["v360p"], self.json["v720p"], self.json["v1080p"]]
-
-    @cached_property
-    def thumbnail(self) -> str:
-        """
-        Returns the url of the Video's thumbnail
-        """
-        # FIXME
-        return self.json["poster_url"]
-
-    @cached_property
     def name(self) -> str:
         """
         Returns the name of the Video
@@ -547,6 +529,24 @@ class Video():
         Returns the url associated with the Video
         """
         return self.__url
+
+    @cached_property
+    def contentUrls(self) -> List[str]:
+        """
+        Returns the list video urls in each for a different resolution of the video in increasing order
+
+        Warning:
+        Some resolutions may not exist
+        """
+        return [self.json["v240p"], self.json["v360p"], self.json["v720p"], self.json["v1080p"]]
+
+    @cached_property
+    def thumbnail(self) -> str:
+        """
+        Returns the url of the Video's thumbnail
+        """
+        # FIXME
+        return self.json["poster_url"]
 
     @cached_property
     def description(self) -> str:
@@ -599,6 +599,10 @@ class Video():
         Returns the handler object of the Video
         """
         return self.__handler
+
+    def downloadContent(self, root: Path = Path("Videos"), printProgress: bool = True):
+        # TODO
+        pass
 
 
 class Luscious(RequestHandler):
