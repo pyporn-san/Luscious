@@ -244,7 +244,8 @@ class Album():
                 self.__id = int(albumInput.split("_")[-1][:-1])
                 self.__json = self.__handler.post(
                     Luscious.API, json=getAlbumInfo(self.__id)).json()["data"]["album"]["get"]
-
+            else:
+                raise TypeError
             self.__url = urljoin(Luscious.HOME, self.__json["url"])
         except:
             raise NotFound
@@ -497,13 +498,9 @@ class Video():
                     Luscious.API, json=getVideoInfo(self.__id)).json()["data"]["video"]["get"]
             else:
                 raise TypeError
-        except Exception as e:
-            self.__exists = False
-            print(e)
-            return
-
-        self.__exists = True
-        self.__url = urljoin(Luscious.HOME, self.__json["url"])
+            self.__url = urljoin(Luscious.HOME, self.__json["url"])
+        except:
+            raise NotFound
 
     def __str__(self) -> str:
         return self.name
@@ -581,16 +578,6 @@ class Video():
         Returns a dict with fields "id", "title", "url"
         """
         return self.json["audiences"]
-
-    @cached_property
-    def exists(self) -> bool:
-        """
-        Returns a boolean value indicating whether the Video exists
-        """
-        try:
-            return self.__exists == True
-        except:
-            return False
 
     @cached_property
     def contentType(self) -> str:
