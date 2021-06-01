@@ -310,6 +310,13 @@ class Album():
         return [tag.name for tag in self.tags if tag.category == "Character"]
 
     @cached_property
+    def parodies(self) -> List[Tag]:
+        """
+        Returns the list of parodied content names
+        """
+        return [tag.name for tag in self.tags if tag.category == "Parody"]
+
+    @cached_property
     def audiences(self) -> dict:
         """
         The intended audience of the Album
