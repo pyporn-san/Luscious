@@ -160,7 +160,50 @@ class Tag():
         """
         return f"#{self.sanitizedName.replace(' ','_').replace('-','_')}"
 
+    def __str__(self):
+        """
+        Returns the tag name
+        """
+        return self.name
+
+
+@dataclass
+class Genre():
+    """
+    A Tag class used to help with tags
+    """
+    id: str
+    title: str
+    url: str
+
     @cached_property
+    def name(self):
+        """
+        Returns the name of the comic without the category
+        """
+        return self.text.split(":")[-1].strip().title()
+
+    @cached_property
+    def fullName(self):
+        """
+        returns the full name of the in the format "category: name"
+        """
+        return self.text
+
+    @cached_property
+    def sanitizedName(self):
+        """
+        Returns the sanitized name of the tag
+        """
+        return sanitize_filepath(self.name)
+
+    @cached_property
+    def hashtag(self):
+        """
+        Returns the tag name in hashtag format "#Tag_Name"
+        """
+        return f"#{self.sanitizedName.replace(' ','_').replace('-','_')}"
+
     def __str__(self):
         """
         Returns the tag name
@@ -286,6 +329,14 @@ class Album():
         Returns the description of the Album
         """
         return self.json["description"]
+
+    @cached_property
+    def genres(self) -> List[Genre]:
+        """
+        The Album's genres
+        Returns a list of `Genre` objects
+        """
+        return [Genre(genre["id"], genre["title"], genre["url"]) for genre in self.json["genres"]]
 
     @cached_property
     def tags(self) -> List[Tag]:
@@ -506,6 +557,14 @@ class Video():
         Returns the description of the Video
         """
         return self.json["description"]
+
+    @cached_property
+    def genres(self) -> List[Genre]:
+        """
+        The Album's genres
+        Returns a list of `Genre` objects
+        """
+        return [Genre(genre["id"], genre["title"], genre["url"]) for genre in self.json["genres"]]
 
     @cached_property
     def tags(self) -> List[Tag]:
