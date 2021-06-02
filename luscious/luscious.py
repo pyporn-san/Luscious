@@ -15,7 +15,7 @@ from pathvalidate import sanitize_filepath
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.models import Response
-from tqdm import trange
+from tqdm import trange, tqdm
 from urllib3.util.retry import Retry
 
 try:
@@ -25,6 +25,10 @@ except:
 
 
 class NotFound(Exception):
+    pass
+
+
+class DownloadFailed(Exception):
     pass
 
 
@@ -419,8 +423,8 @@ class Album():
 
     def downloadContent(self, root: Path = Path("Albums"), printProgress: bool = True):
         """
-        Downloads all pictures that don't already exist in the directory to the follder `root`
-        The progress bar can be disabled by passing false to printProgress
+        Downloads all pictures that don't already exist in the directory to the folder `root`
+        The progress bar can be disabled by passing False to printProgress
         Returns the list of downloaded files' filepaths
         """
         paths = []
@@ -600,9 +604,36 @@ class Video():
         """
         return self.__handler
 
-    def downloadContent(self, root: Path = Path("Videos"), printProgress: bool = True):
-        # TODO
-        pass
+    def downloadContent(self, downloadQuality: int = 0, root: Path = Path("Videos"), printProgress: bool = True):
+        """
+        FIXME for some reason access to videos are forbidden. This was not the case before. If anybody can help 
+
+
+        downloads the video if it doesn't already exist in the directory to the folder `root`
+        The quality will be chosen by `downloadQuality` that defaults to the lowest quality
+        `downloadQuality` can be a number from 0 to 3 with 0 representing 240p (the lowest quality)
+        if the chosen quality is not available it will default to the highest quality available (which is always lower than the chosen quality)
+        The progress bar can be disabled by passing False to printProgress
+        Returns the path of the downloaded video
+        """
+        if(isinstance(root, str)):
+            root = Path(root)
+        root = root.joinpath(sanitize_filepath(self.sanitizedName))
+        root.mkdir(parents=True, exist_ok=True)
+        url = self.contentUrls[downloadQuality]
+        if(not url):
+            for i in range(downloadQuality+1):
+                url = self.contentUrls[i] if self.contentUrls[i] else url
+
+        response = self.handler.get(url, stream=True)
+        total_size_in_bytes = int(response.headers.get('content-length', 0))
+        with tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True) as progress_bar:
+            with open(root.joinpath(self.sanitizedName), 'wb') as file:
+                for data in response.iter_content(1024):
+                    progress_bar.update(len(data))
+                    file.write(data)
+        if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+            raise DownloadFailed
 
 
 class Luscious(RequestHandler):
