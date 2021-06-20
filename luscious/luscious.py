@@ -441,9 +441,9 @@ class Album():
                     fpath = root.joinpath(
                         Path(urlparse(self.contentUrls[i]).path).name)
                 printName = f'"{self.name}" page {i+1}/{self.pictureCount}'
-                if(list(root.glob(fpath.name+"*"))):
-                    tq.set_description(f"{fpath.name} exists")
-                    paths.append(list(root.glob(fpath.name+"*"))[0])
+                if(list(root.glob(fpath.stem+"*"))):
+                    tq.set_description(f"{fpath.stem} exists")
+                    paths.append(list(root.glob(fpath.stem+"*"))[0])
                     time.sleep(0.1)
                     continue
                 else:
