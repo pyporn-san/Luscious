@@ -1,4 +1,4 @@
-requests==2.25.1
+requests==2.26.0
 Faker==8.10.0
 pathvalidate==2.4.1
 urllib3==1.26.6
