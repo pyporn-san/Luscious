@@ -549,7 +549,6 @@ class Video():
         """
         Returns the url of the Video's thumbnail
         """
-        # FIXME
         return self.json["poster_url"]
 
     @cached_property
