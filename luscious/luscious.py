@@ -219,6 +219,7 @@ class Album():
     """
     A class representing an album and it's properties
     """
+
     def __init__(self, albumInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
         """
         Initializes an album object based on albumInput
@@ -468,6 +469,7 @@ class Video():
     """
     A class representing a video and it's properties
     """
+
     def __init__(self, videoInput: Union[int, str, dict], download: bool = False, handler: RequestHandler = None):
         """
         Initializes an Video object based on videoInput
