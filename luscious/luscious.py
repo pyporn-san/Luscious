@@ -421,7 +421,7 @@ class Album():
         """
         return self.__handler
 
-    def downloadContent(self, root: Path = Path("Albums"), printProgress: bool = True):
+    def downloadContent(self, root: Union[Path, str] = Path("Albums"), printProgress: bool = True):
         """
         Downloads all pictures that don't already exist in the directory to the folder `root`
         The progress bar can be disabled by passing False to printProgress
@@ -441,15 +441,14 @@ class Album():
                     fpath = root.joinpath(
                         Path(urlparse(self.contentUrls[i]).path).name)
                 printName = f'"{self.name}" page {i+1}/{self.pictureCount}'
-                if(list(root.glob(fpath.stem+"*"))):
-                    tq.set_description(f"{fpath.stem} exists")
-                    paths.append(list(root.glob(fpath.stem+"*"))[0])
-                    time.sleep(0.1)
+                globResult = list(root.glob(f"{fpath.stem}*"))
+                if(globResult):
+                    tq.set_description(f"{printName} exists")
+                    paths.append(globResult[0])
                     continue
                 else:
                     try:
-                        r = self.handler.get(
-                            self.contentUrls[i], allow_redirects=True)
+                        r = self.handler.get(self.contentUrls[i])
                         fpath = fpath.with_suffix(
                             mimetypes.guess_extension(r.headers['content-type']))
                         with open(sanitize_filepath(fpath), "wb") as f:
@@ -457,8 +456,7 @@ class Album():
                         tq.set_description(f'{printName} done')
                         paths.append(fpath)
                     except Exception as e:
-                        fpath = fpath.with_name(fpath.name + "_SKIPPED")
-                        with open(sanitize_filepath(fpath), "wb") as f:
+                        with open(sanitize_filepath(fpath.with_name(fpath.name + "_SKIPPED")), "wb") as _:
                             pass
                         tq.set_description(
                             f'{printName} skipped because {e}')
@@ -604,9 +602,9 @@ class Video():
         """
         return self.__handler
 
-    def downloadContent(self, downloadQuality: int = 0, root: Path = Path("Videos"), printProgress: bool = True):
+    def downloadContent(self, downloadQuality: int = 0, root: Union[Path, str] = Path("Videos"), printProgress: bool = True):
         """
-        FIXME for some reason access to videos are forbidden. This was not the case before. If anybody can help 
+        FIXME for some reason access to videos are forbidden. This was not the case before. If anybody can help feel free to raise an issue or a pull request
 
 
         downloads the video if it doesn't already exist in the directory to the folder `root`
@@ -625,15 +623,25 @@ class Video():
             for i in range(downloadQuality+1):
                 url = self.contentUrls[i] if self.contentUrls[i] else url
 
-        response = self.handler.get(url, stream=True)
-        total_size_in_bytes = int(response.headers.get('content-length', 0))
-        with tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True) as progress_bar:
-            with open(root.joinpath(self.sanitizedName), 'wb') as file:
-                for data in response.iter_content(1024):
-                    progress_bar.update(len(data))
+        fpath = root.joinpath(self.sanitizedName)
+        printName = self.name
+        r = self.handler.get(url, stream=True)
+        fpath = fpath.with_suffix(
+            mimetypes.guess_extension(r.headers['content-type']))
+        total_size_in_bytes = int(
+            r.headers.get('content-length', 0))
+        with tqdm(total=total_size_in_bytes, disable=not printProgress, unit='iB', unit_scale=True, desc=self.name) as tq:
+            with open(sanitize_filepath(fpath), 'wb') as file:
+                for data in r.iter_content(1024):
+                    tq.update(len(data))
                     file.write(data)
-        if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-            raise DownloadFailed
+            if total_size_in_bytes != 0 and tq.n != total_size_in_bytes:
+                with open(sanitize_filepath(fpath.with_name(fpath.name + "_SKIPPED")), "wb") as _:
+                    pass
+                tq.set_description(f'{printName} skipped')
+                return fpath
+            else:
+                return fpath
 
 
 class Luscious(RequestHandler):
