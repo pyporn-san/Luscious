@@ -1,5 +1,5 @@
-requests==2.26.0
-Faker==9.8.0
-pathvalidate==2.5.0
-urllib3==1.26.8
-tqdm==4.62.3
+requests<=2.27.1
+Faker<=11.3.0
+pathvalidate<=2.5.0
+urllib3<=1.26.8
+tqdm<=4.62.3
